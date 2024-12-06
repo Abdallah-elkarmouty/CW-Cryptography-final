@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Vault Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #eaeaea;
+            font-family: Arial, sans-serif;
+        }
+        .vault-header {
+            background: #161b22;
+            color: #4caf50;
+            padding: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+        .sidebar {
+            background: #343a40;
+            height: 100vh;
+            color: white;
+            padding-top: 20px;
+            position: fixed;
+            width: 220px;
+        }
+        .sidebar a {
+            color: white;
+            display: block;
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .sidebar a:hover {
+            background: #4caf50;
+            color: white;
+            text-decoration: none;
+        }
+        .main-content {
+            margin-left: 240px;
+            padding: 20px;
+        }
+        .file-card {
+            border: 1px solid #2d3748;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #1f2933;
+            color: #eaeaea;
+        }
+        .file-card h5 {
+            color: #4caf50;
+        }
+        .file-card p {
+            color: #bbb;
+        }
+        .btn-info, .btn-danger {
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .btn-info {
+            background-color: #4caf50;
+            border: none;
+        }
+        .btn-info:hover {
+            background-color: #45a049;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+            border: none;
+        }
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        .custom-file-upload {
+            display: inline-block;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .custom-file-upload:hover {
+            background-color: #45a049;
+        }
+        .hidden-file-input {
+            display: none;
+        }
+        .file-metadata {
+            font-size: 0.9rem;
+        }
+        .no-files {
+            color: #bbb;
+            font-size: 1.1rem;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="vault-header">
+    Secure Vault Dashboard
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <h4 class="text-center">Navigation</h4>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('encryption_page') }}">Encryption Info</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+
+        <div class="col-md-10 main-content">
+            <div class="mt-4">
+                <h3 class="mb-4">Welcome, {{ username }}!</h3>
+                <h4>Your Uploaded Files</h4>
+                <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data" class="mb-4">
+                    <!-- Custom file upload button -->
+                    <label class="custom-file-upload">
+                        <input type="file" name="file" class="hidden-file-input" id="fileInput" onchange="updateFileName()">
+                        Upload File
+                    </label>
+                    <span id="fileName" class="ml-2">No file chosen</span>
+                    <button type="submit" class="btn btn-primary mt-2">Upload</button>
+                </form>
+
+                <div class="row">
+                    {% if files %}
+                        {% for file in files %}
+                        <div class="col-md-4">
+                            <div class="file-card mb-4">
+                                <h5>{{ file.filename }}</h5>
+                                <p class="file-metadata">Metadata: {{ file.file_metadata }}</p>
+                                <!-- Replace Download button with View button -->
+                                <a href="{{ url_for('view_file', filename=file.filename) }}" class="btn btn-info mb-2">Download</a>
+                                <form action="{{ url_for('delete_file', filename=file.filename) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="no-files">No files uploaded yet. Start uploading files using the form above!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateFileName() {
+        var fileInput = document.getElementById('fileInput');
+        var fileName = document.getElementById('fileName');
+        if (fileInput.files.length > 0) {
+            fileName.textContent = fileInput.files[0].name;
+        } else {
+            fileName.textContent = 'No file chosen';
+        }
+    }
+</script>
+
+</body>
+</html>
+    

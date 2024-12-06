@@ -1,0 +1,88 @@
+<!-- encryption_page.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Encryption Information</title>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #eaeaea;
+            font-family: Arial, sans-serif;
+        }
+        .vault-header {
+            background: #161b22;
+            color: #4caf50;
+            padding: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+        .content {
+            padding: 20px;
+        }
+        a {
+            color: #4caf50;
+        }
+        .sidebar {
+            background: #343a40;
+            height: 100vh;
+            color: white;
+            padding-top: 20px;
+            position: fixed;
+            width: 220px;
+        }
+        .sidebar a {
+            color: white;
+            display: block;
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .sidebar a:hover {
+            background: #4caf50;
+            color: white;
+            text-decoration: none;
+        }
+        .main-content {
+            margin-left: 240px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="vault-header">
+    Encryption Information
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <h4 class="text-center">Navigation</h4>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('encryption_page') }}">Encryption Info</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+
+        <div class="col-md-10 main-content">
+            <div class="mt-4">
+                <h2>How Your Files are Secured</h2>
+                <p>Your files are encrypted using AES-256 encryption before being stored on the server. The AES key used for encryption is itself encrypted using RSA public-key encryption.</p>
+                <h3>AES-256 Encryption</h3>
+                <p>AES (Advanced Encryption Standard) is a symmetric encryption algorithm widely used across the globe to secure data. AES-256 refers to the use of a 256-bit key size, providing a high level of security.</p>
+                <h3>RSA Encryption</h3>
+                <p>RSA is an asymmetric encryption algorithm that uses a pair of keys: a public key for encryption and a private key for decryption. We use RSA to encrypt the AES key, ensuring that only the holder of the private key can decrypt it.</p>
+                <p>This combination of symmetric and asymmetric encryption ensures both the security and efficiency of file encryption.</p>
+                <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

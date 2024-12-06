@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Vault - Sign Up</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #eaeaea;
+            font-family: Arial, sans-serif;
+        }
+        .signup-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: #161b22;
+            border-radius: 8px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
+        }
+        .signup-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .signup-header h2 {
+            font-size: 2rem;
+            color: #4caf50;
+            font-weight: bold;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .form-group label {
+            color: #bbb;
+        }
+        .form-control {
+            background-color: #1f2933;
+            color: #fff;
+            border: 1px solid #2d3748;
+        }
+        .form-control:focus {
+            background-color: #1f2933;
+            border-color: #4caf50;
+            color: #fff;
+            box-shadow: 0 0 5px #4caf50;
+        }
+        .btn-primary {
+            background-color: #4caf50;
+            border: none;
+            width: 100%;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+        }
+        .btn-primary:hover {
+            background-color: #45a049;
+        }
+        .alert-warning {
+            background-color: #f4b400;
+            color: #333;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        .text-center {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        .text-center a {
+            color: #4caf50;
+            text-decoration: underline;
+        }
+        .password-policy {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #eaeaea;
+            list-style: none;
+            padding-left: 0;
+        }
+        .password-policy li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 5px;
+        }
+        .password-policy li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #bbb;
+            font-size: 1.2rem;
+        }
+        .password-policy li.valid {
+            color: #4caf50;
+        }
+        .password-policy li.valid::before {
+            content: "✔";
+        }
+        .password-policy li.invalid {
+            color: #e74c3c;
+        }
+        .password-policy li.invalid::before {
+            content: "✘";
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="signup-header">
+            <h2>Secure Vault</h2>
+        </div>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-warning" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form action="{{ url_for('signup') }}" method="post">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" class="form-control" id="username" name="username" required placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password" name="password" required placeholder="Enter password" oninput="validatePassword()">
+                <ul class="password-policy" id="password-policy">
+                    <li class="invalid" id="length">At least 8 characters</li>
+                    <li class="invalid" id="uppercase">At least one uppercase letter</li>
+                    <li class="invalid" id="lowercase">At least one lowercase letter</li>
+                    <li class="invalid" id="number">At least one number</li>
+                    <li class="invalid" id="special">At least one special character (!@#$%^&*)</li>
+                </ul>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="signup-btn" disabled>Sign Up</button>
+        </form>
+        
+        <p class="text-center mt-3">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+    </div>
+
+    <script>
+        function validatePassword() {
+            const password = document.getElementById("password").value;
+            const length = document.getElementById("length");
+            const uppercase = document.getElementById("uppercase");
+            const lowercase = document.getElementById("lowercase");
+            const number = document.getElementById("number");
+            const special = document.getElementById("special");
+            const signupBtn = document.getElementById("signup-btn");
+            
+            // Regular expressions for password policy
+            const lengthRegex = /.{8,}/;
+            const uppercaseRegex = /[A-Z]/;
+            const lowercaseRegex = /[a-z]/;
+            const numberRegex = /[0-9]/;
+            const specialRegex = /[!@#$%^&*]/;
+
+            // Validate password
+            length.classList.toggle("valid", lengthRegex.test(password));
+            length.classList.toggle("invalid", !lengthRegex.test(password));
+            
+            uppercase.classList.toggle("valid", uppercaseRegex.test(password));
+            uppercase.classList.toggle("invalid", !uppercaseRegex.test(password));
+            
+            lowercase.classList.toggle("valid", lowercaseRegex.test(password));
+            lowercase.classList.toggle("invalid", !lowercaseRegex.test(password));
+            
+            number.classList.toggle("valid", numberRegex.test(password));
+            number.classList.toggle("invalid", !numberRegex.test(password));
+            
+            special.classList.toggle("valid", specialRegex.test(password));
+            special.classList.toggle("invalid", !specialRegex.test(password));
+
+            // Enable or disable sign-up button
+            const isValid = lengthRegex.test(password) && uppercaseRegex.test(password) && lowercaseRegex.test(password) &&
+                            numberRegex.test(password) && specialRegex.test(password);
+            signupBtn.disabled = !isValid;
+        }
+    </script>
+</body>
+</html>
